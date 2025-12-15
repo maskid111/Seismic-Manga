@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seismic Manga</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0f;
+            color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        /* Header */
+        header {
+            background: #1a1a24;
+            padding: 0.8rem 1rem;
+            border-bottom: 2px solid #c2a386;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: #c2a386;
+            padding: 4px;
+            border: 2px solid #a18a6f;
+        }
+        
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #c2a386;
+        }
+        
+        .chapter-title {
+            font-size: 0.9rem;
+            color: #a1a1a6;
+            text-align: right;
+        }
+        
+        /* Artist Credit */
+        .artist-credit {
+            background: rgba(194, 163, 134, 0.1);
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2a386;
+            border-bottom: 1px solid rgba(194, 163, 134, 0.3);
+        }
+        
+        .artist-name {
+            font-weight: bold;
+            color: #e8d7c5;
+        }
+        
+        /* Episode Navigation */
+        .episode-nav {
+            background: #0a0a0f;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(194, 163, 134, 0.2);
+        }
+        
+        .episode-nav button {
+            background: #1a1a24;
+            color: #f5f5f7;
+            border: 1px solid #c2a386;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .episode-nav button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .current-episode {
+            color: #a1a1a6;
+            font-size: 0.9rem;
+        }
+        
+        /* Manga Pages */
+        .manga-pages {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0.5rem;
+        }
+        
+        .manga-page {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .manga-page img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: #1a1a24;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #c2a386;
+            border: 1px dashed #c2a386;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Story */
+        .story {
+            max-width: 800px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            color: #a1a1a6;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Episode List */
+        .episode-list {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .episode-list h3 {
+            color: #c2a386;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .episode-item {
+            background: #1a1a24;
+            border: 1px solid rgba(194, 163, 134, 0.2);
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .episode-item:hover {
+            border-color: #c2a386;
+        }
+        
+        .episode-item.active {
+            border-color: #c2a386;
+            background: rgba(194, 163, 134, 0.1);
+        }
+        
+        .episode-item.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Footer */
+        footer {
+            max-width: 800px;
+            margin: 2rem auto 1rem;
+            padding: 1rem;
+            color: #a1a1a6;
+            font-size: 0.8rem;
+            text-align: center;
+            border-top: 1px solid rgba(194, 163, 134, 0.2);
+        }
+        
+        .footer-credit {
+            color: #c2a386;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .manga-pages {
+                padding: 0.25rem;
+            }
+            
+            .episode-nav {
+                padding: 0.5rem;
+            }
+            
+            .story {
+                padding: 0 0.5rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            
+            .logo-container {
+                justify-content: center;
+            }
+            
+            .chapter-title {
+                text-align: center;
+            }
+            
+            .artist-credit {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="logo.png" alt="Seismic Manga Logo" class="logo-img" onerror="this.style.display='none'">
+                <div class="logo-text">SEISMIC MANGA</div>
+            </div>
+            <div class="chapter-title">Chapter 1: The Box of STYPE</div>
+        </div>
+    </header>
+    
+    <!-- Artist Credit -->
+    <div class="artist-credit">
+        Art & Story by <span class="artist-name">Sage of Six Paths</span>
+    </div>
+    
+    <!-- Episode Navigation -->
+    <div class="episode-nav">
+        <button id="prev-btn">← Previous</button>
+        <div class="current-episode" id="current-episode">Episode 1</div>
+        <button id="next-btn">Next →</button>
+    </div>
+    
+    <!-- Manga Pages -->
+    <div class="manga-pages" id="manga-pages">
+        <!-- Pages will load here -->
+    </div>
+    
+    <!-- Story -->
+    <div class="story" id="story">
+        <!-- Story will load here -->
+    </div>
+    
+    <!-- Episode List -->
+    <div class="episode-list">
+        <h3>All Episodes</h3>
+        <div id="episode-list-container">
+            <!-- Episode list will load here -->
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>Seismic Manga • Chapter 1: The Box of STYPE</p>
+        <p id="episode-count">7/14 Episodes Available</p>
+        <p class="footer-credit">Built by Maskid • Art by Sage of Six Paths</p>
+    </footer>
+
+    <script>
+        // Manga data
+        const mangaData = {
+            1: {
+                title: "Episode 1: Manga Begins",
+                pages: ["c1e1.jpg", "c1e11.jpg"],
+                story: "Xealist & Burhan tries to retrieve the first of the (3) Seismic Artifact, Elijah the Rogue Leader chases after them as they approach Heathcliff (Capital City of Seismic)"
+            },
+            2: {
+                title: "Episode 2: Encryption Over Emotion",
+                pages: ["c1e2.jpg"],
+                story: "Burhan forces Xealist to leave emotions aside and take the Stype to Heathcliff (capital city of Seismic) alone, while he holds the rogue leader Elijah off."
+            },
+            3: {
+                title: "Episode 3: Encryption vs Forced Transparency",
+                pages: ["c1e3.jpg"],
+                story: "Xealist let's go of his emotions to retrieve the Stype to Heathcliff ( capital city of Seismic) while the Leader Burhan faces the threat alone."
+            },
+            4: {
+                title: "Episode 4: Student Master Reunion",
+                pages: ["c1e4.jpg"],
+                story: "Elijah Challenges his former Master Burhan who made him a leader on Seismic. While Xealist makes his way for Heathcliff."
+            },
+            5: {
+                title: "Episode 5: Magnitude is Key",
+                pages: ["c1e5.jpg"],
+                story: "From the first clash, Burhan realizes the effects of Magnitude 8 on Seismic."
+            },
+            6: {
+                title: "Episode 6: Encryption survives the next day",
+                pages: ["c1e6.jpg"],
+                story: "Espionage Mission failed: Xealist makes it to Heathcliff (Capital City of Seismic) with the box of stype. Stype is one of the 3 artifacts of Seismic: [ Stype, Reth, Stables ], it holds all info on how the Devs interact with the Reth."
+            },
+            7: {
+                title: "Episode 7: The mountain of Encryption",
+                pages: ["c1e7.jpg"],
+                story: "Xealist arrives safely to Heathcliff Portal, now all he needs is his encryption name to decrypt the portal and pass through into the capital city of Seismic with STYPE"
+            }
+        };
+        
+        let currentEpisode = 1;
+        let totalEpisodes = Object.keys(mangaData).length;
+        
+        // DOM elements
+        const mangaPages = document.getElementById('manga-pages');
+        const storyDiv = document.getElementById('story');
+        const currentEpisodeDisplay = document.getElementById('current-episode');
+        const episodeCountDisplay = document.getElementById('episode-count');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const episodeListContainer = document.getElementById('episode-list-container');
+        
+        // Initialize
+        function init() {
+            episodeCountDisplay.textContent = `${totalEpisodes}/14 Episodes Available`;
+            loadEpisode(currentEpisode);
+            createEpisodeList();
+            restoreBookmark();
+        }
+        
+        // Load episode
+        async function loadEpisode(episodeNumber) {
+            const episode = mangaData[episodeNumber];
+            if (!episode) return;
+            
+            currentEpisode = episodeNumber;
+            
+            // Clear
+            mangaPages.innerHTML = '';
+            storyDiv.innerHTML = '';
+            
+            // Load all pages
+            for (let i = 0; i < episode.pages.length; i++) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'manga-page';
+                
+                const img = document.createElement('img');
+                img.src = episode.pages[i];
+                img.alt = `Page ${i + 1}`;
+                img.loading = 'lazy';
+                
+                img.onerror = function() {
+                    this.parentNode.innerHTML = `
+                        <div class="image-placeholder">
+                            <div>📖</div>
+                            <p>Episode ${episodeNumber}, Page ${i + 1}</p>
+                            <p style="font-size: 0.8rem;">Add image: ${episode.pages[i]}</p>
+                        </div>
+                    `;
+                };
+                
+                pageDiv.appendChild(img);
+                mangaPages.appendChild(pageDiv);
+            }
+            
+            // Add story
+            storyDiv.innerHTML = `
+                <p><strong>${episode.title}</strong></p>
+                <p style="margin-top: 0.5rem;">${episode.story}</p>
+            `;
+            
+            // Update display
+            currentEpisodeDisplay.textContent = `Episode ${episodeNumber}`;
+            
+            // Update navigation
+            updateNavigation();
+            
+            // Update episode list
+            updateEpisodeList();
+            
+            // Save bookmark
+            saveBookmark();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        // Create episode list
+        function createEpisodeList() {
+            let html = '';
+            for (let i = 1; i <= 14; i++) {
+                const isAvailable = i <= totalEpisodes;
+                const isActive = i === currentEpisode;
+                const episodeTitle = mangaData[i]?.title || `Episode ${i}${!isAvailable ? ' (Coming Soon)' : ''}`;
+                
+                html += `
+                    <div class="episode-item ${isActive ? 'active' : ''} ${!isAvailable ? 'coming-soon' : ''}" 
+                         data-episode="${i}" 
+                         ${!isAvailable ? 'title="Coming Soon"' : ''}>
+                        ${episodeTitle}
+                    </div>
+                `;
+            }
+            episodeListContainer.innerHTML = html;
+            
+            // Add click events
+            document.querySelectorAll('.episode-item').forEach(item => {
+                const episodeNum = parseInt(item.dataset.episode);
+                const isAvailable = episodeNum <= totalEpisodes;
+                
+                if (isAvailable) {
+                    item.addEventListener('click', () => {
+                        loadEpisode(episodeNum);
+                    });
+                }
+            });
+        }
+        
+        // Update episode list
+        function updateEpisodeList() {
+            document.querySelectorAll('.episode-item').forEach(item => {
+                item.classList.remove('active');
+                if (parseInt(item.dataset.episode) === currentEpisode) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        // Update navigation buttons
+        function updateNavigation() {
+            prevBtn.disabled = currentEpisode === 1;
+            nextBtn.disabled = currentEpisode === totalEpisodes;
+        }
+        
+        // Save bookmark
+        function saveBookmark() {
+            localStorage.setItem('seismic-bookmark', currentEpisode);
+        }
+        
+        // Restore bookmark
+        function restoreBookmark() {
+            const saved = localStorage.getItem('seismic-bookmark');
+            if (saved && mangaData[saved]) {
+                loadEpisode(parseInt(saved));
+            }
+        }
+        
+        // Event listeners
+        function setupEventListeners() {
+            // Previous button
+            prevBtn.addEventListener('click', () => {
+                if (currentEpisode > 1) {
+                    loadEpisode(currentEpisode - 1);
+                }
+            });
+            
+            // Next button
+            nextBtn.addEventListener('click', () => {
+                if (currentEpisode < totalEpisodes) {
+                    loadEpisode(currentEpisode + 1);
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && currentEpisode > 1) {
+                    loadEpisode(currentEpisode - 1);
+                } else if (e.key === 'ArrowRight' && currentEpisode < totalEpisodes) {
+                    loadEpisode(currentEpisode + 1);
+                }
+            });
+            
+            // Swipe for mobile
+            let touchStartX = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            });
+            
+            document.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                
+                // Swipe right (previous)
+                if (diff > 50 && currentEpisode > 1) {
+                    loadEpisode(currentEpisode - 1);
+                }
+                // Swipe left (next)
+                else if (diff < -50 && currentEpisode < totalEpisodes) {
+                    loadEpisode(currentEpisode + 1);
+                }
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            setupEventListeners();
+        });
+    </script>
+</body>
+</html>
